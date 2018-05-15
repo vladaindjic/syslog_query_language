@@ -372,7 +372,6 @@ class CompoundExpr(IRObject):
 # Header
 class SysQuery(IRObject):
     def __init__(self, query, header=None):
-        print("Ja sam breee")
         self.query = query
         self.header = header
 
