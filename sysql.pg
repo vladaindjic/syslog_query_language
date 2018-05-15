@@ -1,0 +1,328 @@
+SysQuery:
+    Query
+    | Query SEMICOLON Header
+;
+
+Header:
+    HeaderExpr
+    | Header COMMA HeaderExpr
+;
+
+HeaderExpr:
+    LimitExpr
+    | PageExpr
+    | SortExpr
+;
+
+LimitExpr:
+    LIMIT LPAREN INT RPAREN
+;
+
+PageExpr:
+    PAGE LPAREN INT RPAREN
+;
+
+SortExpr:
+    SORT LPAREN SortParams RPAREN
+;
+
+SortParams:
+    SortParam
+    | SortParams COMMA SortParam
+;
+
+SortParam:
+    Property COLON SortDir
+;
+
+SortDir:
+    ASC
+    | DESC
+;
+
+Query:
+    Expr
+    | Query or_op Expr
+;
+
+Expr:
+    NonTerm
+    | Expr and_op NonTerm
+;
+
+NonTerm:
+    Term
+    | not_op Term
+;
+
+Term:
+    SysExpr
+    | LPAREN Query RPAREN
+;
+
+
+SysExpr:
+    RelExpr
+    | StrExpr
+    | TimestampExpr
+;
+
+RelExpr:
+    RelProperty rel_op INT
+;
+
+StrExpr:
+    StrProperty eq_op RHSStrExpr
+;
+
+TimestampExpr:
+    BeforeExpr
+    | AfterExpr
+    | AtExpr
+    | LastExpr
+;
+
+BeforeExpr:
+    BEFORE LPAREN datetime RPAREN
+;
+
+AfterExpr:
+    AFTER LPAREN datetime RPAREN
+;
+
+AtExpr:
+    AT LPAREN datetime RPAREN
+;
+
+LastExpr:
+    LAST LPAREN TIME_OFFSET RPAREN
+;
+
+datetime:
+    YEAR
+    | YEAR_MONTH
+    | YEAR_MONTH_DAY
+    | YEAR_MONTH_DAY_HOUR
+    | YEAR_MONTH_DAY_HOUR_MINUTE
+    | YEAR_MONTH_DAY_HOUR_MINUTE_SECOND
+    // FIXME: eventually add for ms and timezone, if needed
+;
+
+RHSStrExpr:
+    STRING
+    | REG_EXPR
+;
+
+Property:
+    RelProperty
+    | StrProperty
+    | TimeProperty
+;
+
+RelProperty:
+    FACILITY
+    | SEVERITY
+    | VERSION
+;
+
+StrProperty:
+    HOSTNAME
+    | APPNAME
+    | PROCID
+    | MSGID
+    | MSG
+;
+
+TimeProperty:
+    TIMESTAMP
+;
+
+and_op:
+    'and'
+;
+
+or_op:
+    'or'
+;
+
+not_op:
+    'not'
+;
+
+rel_op:
+    eq_op
+    | ne_op
+    | lt_op
+    | lte_op
+    | gt_op
+    | gte_op
+;
+
+
+lt_op:
+    '<'
+;
+
+lte_op:
+    '<='
+;
+
+gt_op:
+    '>'
+;
+
+gte_op:
+    '>='
+;
+
+eq_op:
+    '='
+;
+
+ne_op:
+    '!='
+;
+
+
+// Lexer
+KEYWORD:
+        /\w+/
+;
+
+INT:
+    /\d+/
+;
+
+// Old version /\".*\"/
+// Middle version/\"[^\"]*\"/    // FIXME: find better solution for this
+// FIXME: check if this is now the right version
+STRING:
+    /\"((\\\")|[^\"])*\"/
+;
+
+// Old version /\/.*\//
+// Middle version /\/[^\/]*\//   // FIXME: find better solution for this
+REG_EXPR:
+    /\/((\\\/)|[^\/])*\//
+;
+
+
+LPAREN:
+    '('
+;
+
+RPAREN:
+    ')'
+;
+
+FACILITY:
+    'facility'
+;
+
+SEVERITY:
+    'severity'
+;
+
+VERSION:
+    'version'
+;
+
+
+HOSTNAME:
+    'hostname'
+;
+
+
+APPNAME:
+    'appname'
+;
+
+PROCID:
+    'procid'
+;
+
+MSGID:
+    'msgid'
+;
+
+MSG:
+    'msg'
+;
+
+BEFORE:
+    'before'
+;
+
+AFTER:
+    'after'
+;
+
+AT:
+    'at'
+;
+
+LAST:
+    'last'
+;
+
+YEAR:
+    /\d{4}/
+;
+YEAR_MONTH:
+    /\d{4}\-\d{2}/
+;
+
+YEAR_MONTH_DAY:
+    /\d{4}\-\d{2}\-\d{2}/
+;
+
+YEAR_MONTH_DAY_HOUR:
+    /\d{4}\-\d{2}\-\d{2}\s+\d{2}/
+;
+YEAR_MONTH_DAY_HOUR_MINUTE:
+    /\d{4}\-\d{2}\-\d{2}\s+\d{2}:\d{2}/
+;
+YEAR_MONTH_DAY_HOUR_MINUTE_SECOND:
+    /\d{4}\-\d{2}\-\d{2}\s+\d{2}:\d{2}:\d{2}/
+;
+
+
+TIME_OFFSET:
+    /(\d+(y|Y)(\s+)?)?(\d+M(\s+)?)?(\d+(d|D)(\s+)?)?(\d+(h|H)(\s+)?)?(\d+m(\s+)?)?(\d+(s|S))?/
+;
+
+SEMICOLON:
+    ';'
+;
+
+LIMIT:
+    'limit'
+;
+
+PAGE:
+    'page'
+;
+
+SORT:
+    'sort'
+;
+
+TIMESTAMP:
+    'timestamp'
+;
+
+COLON:
+    ':'
+;
+
+ASC:
+    'asc'
+;
+
+DESC:
+    'desc'
+;
+
+COMMA:
+    ','
+;
