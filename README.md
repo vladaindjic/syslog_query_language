@@ -1,15 +1,16 @@
-# syslog_query_language
-Syslog Query Language
+# Syslog Query Language 
+Syslog Query Language is DSL used for query logs stored in MongoDB. It is compiled to MongoDB's query language by mini compiler implemented using Python Parglare library. This project is part of one implementation of [Security Information and Event Management (SIEM)](https://github.com/vladaindjic/siem).
 
-Fajlovi od interesa:
-  - syslog.pg sadrzi gramatiku jezika
-  - ir.py sadrzi medjukod i Parglare akcije. Metode remove_not i inv su zaduzene za primenu De Morganovih zakona, dok su optimize i str_mongo namenjene za optimizaciju mongo upita, odnosno njegovu konverziju u string
-  - sysqo_time_util.py sadrzi funkcije koje olaksavaju rad sa datumom
-  - sysql.py sadrzi klasu koja predstavlja mini kompajler
+Files of interests:
+  - syslog.pg contains grammar of DSL
+  - ir.py contains IR (itermediate representation) and Parglare actions. Methods *remove_not* and *inv* are responsible for applying De Morgan's laws, while *optimize* and *str_mongo* are responsible for generating and optimizing MongoDB's queries.
+  - sysqo_time_util.py contains date and time utility functions
+  - sysql.py contains class which represents mini compiler
   
-Krace objasnjenje sa primerima je dostupno u [sledecem PDF-u](https://drive.google.com/file/d/1KcTYrm0SQofon1eHzAUoJD1NVvmBbHQ1/view?usp=sharing).
+Short explanations with examples can be found in [following PDF](https://drive.google.com/file/d/1KcTYrm0SQofon1eHzAUoJD1NVvmBbHQ1/view?usp=sharing). 
+Note that PDF is written in Serbian. Google Translate can be used to translate the document easily.
 
-Mini kompajler je implementiran u programskom jeziku Python3. Koriscene su sledece biblioteke:
+Syslog Query Language's Compiler is implemented in Python3 programming language. This project also uses following libraries:
   - click           6.7
   - parglare        0.5    
   - pip             10.0.1 
